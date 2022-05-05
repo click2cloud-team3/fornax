@@ -112,7 +112,6 @@ func (m *MissionDeployer) ApplyMission(mission *edgeclustersv1.Mission) error {
 	if len(mission.Spec.Placement.Clusters) == 0 && len(mission.Spec.Placement.MatchLabels) == 0 {
 		for i := 0; i < len(configs.Configs); i++ {
 			config.Config.Kubeconfig = "/etc/fornax/configs/" + configs.Configs[i]
-			config.Config.Name = strings.Split(configs.Configs[i], ".")[0]
 			err := m.ApplyMissionCmd(mission)
 			if err != nil {
 				return err
@@ -125,13 +124,13 @@ func (m *MissionDeployer) ApplyMission(mission *edgeclustersv1.Mission) error {
 		for _, matchingCluster := range mission.Spec.Placement.Clusters {
 			if v1alpha1.ToGivenCluster(matchingCluster.Name) {
 				config.Config.Kubeconfig = "/etc/fornax/configs/" + matchingCluster.Name + ".kubeconfig"
-				config.Config.Name = matchingCluster.Name
 				err := m.ApplyMissionCmd(mission)
 				if err != nil {
 					return err
 				}
 			} else {
-				return fmt.Errorf("Give a valid hostname for clusters.name in the deployment yaml")
+				klog.Infof("Error %v config is not present in edgecluster", matchingCluster.Name)
+				continue
 			}
 		}
 	} else {
@@ -252,7 +251,7 @@ func (m *MissionDeployer) isMatchingMission(mission *edgeclustersv1.Mission) boo
 	}
 
 	for _, matchingCluster := range mission.Spec.Placement.Clusters {
-		if config.Config.Name == matchingCluster.Name {
+		if v1alpha1.ToGivenCluster(matchingCluster.Name) {
 			return true
 		}
 	}
