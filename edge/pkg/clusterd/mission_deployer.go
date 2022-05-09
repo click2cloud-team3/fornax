@@ -107,6 +107,7 @@ func getDeleteContentCmd(mission *edgeclustersv1.Mission) (string, error) {
 	return resolveCommand(mission.Spec.MissionCommand.ReverseCommand), nil
 }
 
+//ApplyMission deploys missions based on given specifications
 func (m *MissionDeployer) ApplyMission(mission *edgeclustersv1.Mission) error {
 	configs := v1alpha1.Clusterd{Configs: v1alpha1.SetKubeconfigArray()}
 	if len(mission.Spec.Placement.Clusters) == 0 && len(mission.Spec.Placement.MatchLabels) == 0 {
@@ -176,6 +177,7 @@ func (m *MissionDeployer) ApplyMissionCmd(mission *edgeclustersv1.Mission) error
 	return nil
 }
 
+//DeleteMission deletes missions based on given specifications
 func (m *MissionDeployer) DeleteMission(mission *edgeclustersv1.Mission) error {
 	configs := v1alpha1.Clusterd{Configs: v1alpha1.SetKubeconfigArray()}
 	if len(mission.Spec.Placement.Clusters) == 0 && len(mission.Spec.Placement.MatchLabels) == 0 {

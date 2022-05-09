@@ -489,6 +489,6 @@ type Clusterd struct {
 	// default 10
 	ClusterGatewayUpdateInterval int32 `json:"clusterGatewayUpdateInterval,omitempty"`
 
-	// config array stores kubeconfig files of multiple cluster
+	// Configs array stores kubeconfig files of multiple cluster
 	Configs []string
 }
